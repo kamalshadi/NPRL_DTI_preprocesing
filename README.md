@@ -17,14 +17,13 @@ study and the parent folder of Inputs. In the Inputs directory each subject have
 subfolder. Picture below is a sample directory structure for a study with 3 participants.
 
 # Environment Requirement
-The script is wriiten for python2.7 and only runs on linux-like terminals.
+The script is written for python2.7 and only runs on linux-like terminals.
 
 # Usage
 1- open your Terminal
+
 2 - type (option -t is a readout time of the acquisition)
-python preprocess.py -i path_to_Study -t 0.059
+```
+python preprocess.py -i path_to_Study -t <fsl_readout_time>
+```
 After the code finishes, you can find all preprocessed data in **\<study>/Outputs** directory
-
-1 - 
-
-2 - Within each subject folder, following files must exists:
