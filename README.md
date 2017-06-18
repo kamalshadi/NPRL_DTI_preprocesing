@@ -5,15 +5,10 @@ This script runs HCP-like minimal preprocessing pipeline for diffusion weighted 
 The input requirement is based on NPRL group at Emory acquisition protocol. For each subject following files must be available:
 
 * b0 image right to left acquisition
-
 * b0 image left to right acquisition
-
 * diffusion image right to left acquisition
-
 * diffusion image left to right acquisition
-
 * bvector (.bvec) for each diffusion image
-
 * b-value (.bval) for each diffusion image
 
 
