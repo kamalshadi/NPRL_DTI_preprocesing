@@ -16,7 +16,7 @@ Put all subjects' data in the folder **\<study>/Inputs** . **\<study>** is an op
 study and the parent folder of Inputs. In the Inputs directory each subject have her own
 subfolder. Picture below is a sample directory structure for a study with 3 participants.
 
-![hllo](http://media.caranddriver.com/images/media/51/2017-10best-lead-photo-672628-s-original.jpg)
+![directory structure for the script](https://github.com/kamalshadi/NPRL_DTI_preprocesing/blob/master/sample.png)
 
 # Environment Requirement
 The script is written for python2.7 and only runs on linux-like terminals.
