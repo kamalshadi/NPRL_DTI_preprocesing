@@ -13,7 +13,7 @@ The input requirement is based on NPRL group at Emory acquisition protocol. For 
 
 ## Directory structure
 Put all subjects' data in the folder **\<study>/Inputs** . **\<study>** is an optional name for the
-study and the parent folder of Inputs. In the Inputs directory each subject have her own
+study and the parent folder of Inputs. In the **Inputs** directory each subject have her own
 subfolder. Picture below is a sample directory structure for a study with 3 participants.
 
 <img src="https://github.com/kamalshadi/NPRL_DTI_preprocesing/blob/master/sample.png" alt="directory structure for the script" style="width: 200px;" style="text-align: center, horizontal-align: middle;"/>
