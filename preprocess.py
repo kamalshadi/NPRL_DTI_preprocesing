@@ -1,5 +1,5 @@
 '''
-preprocessing pipeline for NPRL DTI dataset wriiten based on
+Preprocessing pipeline for NPRL DTI dataset written based on
 HCP minimal preprocessing guidelines for diffusion MRIs
 
 usage:
