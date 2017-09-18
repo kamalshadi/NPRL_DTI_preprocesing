@@ -11,16 +11,16 @@ Python 2.7
 Url:
 https://github.com/kamalshadi/NPRL_DTI_preprocesing
 
-Author: 
+Author:
 Kamal Shadi
 
 Contact:
 kshadi3@gatech.edu
 
-Date: 
+Date:
 2017/06/17
 
-Revision: 
+Revision:
 1.0
 
 
@@ -35,10 +35,11 @@ import copy
 import numpy as num
 from math import cos,sin
 from shutil import copyfile
+import json
 
 
 
-#################### Setting input arguments ########################### 
+#################### Setting input arguments ###########################
 parser = argparse.ArgumentParser(description=\
 'Pipeline to preprocess DTI data')
 parser.add_argument('-i', action='store', dest='root_folder',\
@@ -49,8 +50,8 @@ parser.add_argument('-t', action='store', dest='fsl_readout',\
 help='Total readout time (FSL definition). you can get this from'+\
 ' MRIconvert tool.',\
 type = float, default=0.0508)
-	
-	
+
+
 
 ############ decompressing nifti for exploreDTI compatability ##########
 def gzip(fd):
@@ -60,8 +61,8 @@ def gzip(fd):
 			if '.nii' in w and '.gz' in w:
 				fn = dp + w
 				os.system("gunzip -d "+fn)
-				
-				
+
+
 ########################### bvec file utilities ########################
 def read_bvec(fn):
 	with open(fn) as f:
@@ -70,6 +71,12 @@ def read_bvec(fn):
 	for i,w in enumerate(st):
 		k[i] = w.split()
 	return k
+
+def read_bval(fn):
+	with open(fn) as f:
+		st=f.read()
+	return [xx.strip() for xx in st.split()]
+
 
 def rot_bvec(cur,theta_x,theta_y,theta_z):
 	Rx = num.zeros((3,3))
@@ -80,25 +87,25 @@ def rot_bvec(cur,theta_x,theta_y,theta_z):
 	Rx[1,0] = -sin(theta_x)
 	Rx[1,1] = cos(theta_x)
 	Rx[2,2] = 1.0
-	
+
 	Ry[0,0] = cos(theta_y)
 	Ry[0,1] = sin(theta_y)
 	Ry[1,0] = -sin(theta_y)
 	Ry[1,1] = cos(theta_y)
 	Ry[2,2] = 1.0
-	
+
 	Rz[0,0] = cos(theta_z)
 	Rz[0,1] = sin(theta_z)
 	Rz[1,0] = -sin(theta_z)
 	Rz[1,1] = cos(theta_z)
 	Rz[2,2] = 1.0
-	
+
 	R = num.dot(num.dot(Rx,Ry),Rz)
 	_R = num.linalg.inv(R)
 	return num.dot(_R,cur)
-	
-	
-####################### Cleaning input directory #######################	
+
+
+####################### Cleaning input directory #######################
 def clean_copy(fd):
 	if fd[-1]!='/':
 		fd = fd + '/'
@@ -128,7 +135,7 @@ def clean_copy(fd):
 			st = ' '.join([str(xx) for xx in cur])
 			st = st + '\n'
 			f.write(st)
-			
+
 
 
 ################### Main pipeline script ###############################
@@ -142,8 +149,8 @@ def pipeline(fd,fsl_readout):
 	#~ print ';;;;'
 	if fd[-1]!='/':
 		fd = fd + '/'
-	merging = True
-	ac = True
+	merging = False
+	ac = False
 	topup = True
 	avg = True
 	bet = True
@@ -161,8 +168,6 @@ def pipeline(fd,fsl_readout):
 	bvec_up = None
 	bvec_dn =None
 	for (dp, dns, fns) in os.walk(fd):
-		print dp
-		print fd
 		for w in fns:
 			if b0_rl[0] in w and b0_rl[1] in w and '.nii' in w:
 				b0_up = dp + w
@@ -176,6 +181,10 @@ def pipeline(fd,fsl_readout):
 				bvec_up = dp + w
 			elif dwi_lr[0] in w and dwi_lr[1] in w and '.bvec' in w:
 				bvec_dn = dp + w
+			elif dwi_rl[0] in w and dwi_rl[1] in w and '.bval' in w:
+				bval_up = dp + w
+			elif dwi_lr[0] in w and dwi_lr[1] in w and '.bval' in w:
+				bval_dn = dp + w
 			else:
 				pass
 		break
@@ -190,10 +199,10 @@ def pipeline(fd,fsl_readout):
 	if merging:
 		# forming nodif
 		print 'Juxtaposing the data in the right order...'
-		os.system('fslroi '+raw_up+ ' '+fd+'nodif_up1 0 1')
-		os.system('fslroi '+raw_dn+ ' '+fd+'nodif_dn1 0 1')
-		os.system('fslroi '+raw_up+ ' '+fd+'weighted_up 1 65')
-		os.system('fslroi '+raw_dn+ ' '+fd+'weighted_dn 1 65')
+		os.system('select_dwi_vols '+raw_up+ ' '+bval_up+' '+fd+'nodif_up1 0')
+		os.system('select_dwi_vols '+raw_dn+ ' '+bval_dn+' '+fd+'nodif_dn1 0')
+		os.system('select_dwi_vols '+raw_up+ ' '+bval_up+' '+fd+'weighted_up 1000')
+		os.system('select_dwi_vols '+raw_dn+ ' '+bval_dn+' '+fd+'weighted_dn 1000')
 		os.system('fslmerge -t '+fd+'nodif_up '+b0_up+' ' \
 		+fd+'nodif_up1')
 		os.system('fslmerge -t '+fd+'nodif_dn '+b0_dn+' '\
@@ -206,21 +215,21 @@ def pipeline(fd,fsl_readout):
 		os.system('fslmerge -t '+fd+'data '+fd+'weighted_up '+\
 		fd+'weighted_dn')
 		os.system('fslmerge -t '+fd+'data '+fd+'nodif '+fd+'data')
-
 	if ac:
+		c1 = C['volumes']['b0_rl']+C['volumes']['dwi_rl'][0]
+		c2 = C['volumes']['b0_lr']+C['volumes']['dwi_lr'][0]
 		# forming acqparams
 		print 'Making acqparams...'
 		with open(fd+'acqparams.txt','w') as f:
-			for i in range(6):
+			for i in range(c1):
 				f.write('1 0 0 '+str(fsl_readout)+'\n')
-			for i in range(6):
+			for i in range(c2):
 				f.write('-1 0 0 '+str(fsl_readout)+'\n')
-
 	if topup:
 		# running topup
 		print 'Running topup...'
-		cmd = '''topup --imain=IMAIN --config=b02b0.cnf --out=OUT
-		 --iout=IOUT --datain=DATAIN'''
+		cmd = '''topup --imain=IMAIN --config=b02b0.cnf --out=OUT \
+		--iout=IOUT --datain=DATAIN'''
 		cmd = cmd.replace('IMAIN',fd+'nodif')
 		cmd = cmd.replace('IMAIN',fd+'data')
 		cmd = cmd.replace('IOUT',fd+'b0_topup_brain')
@@ -245,49 +254,66 @@ def pipeline(fd,fsl_readout):
 		os.system(cmd)
 
 
-	# forming bvec
+	# forming bvec and bval
 	if bvec:
 		print 'Forming bvec...'
 		up = read_bvec(bvec_up)
 		dn = read_bvec(bvec_dn)
+		bup = read_bval(bval_up)
+		bdn = read_bval(bval_dn)
 		with open(fd+'data.bvec','w') as f:
 			for i in range(3):
-				tmp = ['0.0']*12+up[i][1:]+dn[i][1:]
+				tmp = ['0.0']*(C['volumes']['b0_rl']+C['volumes']['dwi_rl'][0]+\
+				C['volumes']['b0_lr']+C['volumes']['dwi_lr'][0])
+				for q,item in enumerate(up[i]):
+					if int(bup[q])==0:
+						continue
+					else:
+						tmp = tmp + [item]
+				for q,item in enumerate(dn[i]):
+					if int(bdn[q])==0:
+						continue
+					else:
+						tmp = tmp + [item]
 				st = ' '.join(tmp)
 				f.write(st+'\n')
-			
+
 
 
 
 	# forming bval
 	if bval:
 		print 'Forming bval...'
-		tmp = ['0']*12
-		tmp = tmp + ['1000']*128
+		tmp = ['0']*(C['volumes']['b0_rl']+C['volumes']['dwi_rl'][0]+\
+		C['volumes']['b0_lr']+C['volumes']['dwi_lr'][0])
+		tmp = tmp + ['1000']*(C['volumes']['dwi_rl'][1]+\
+		C['volumes']['dwi_lr'][1])
 		st = ' '.join(tmp)
 		with open(fd+'data.bval','w') as f:
 			f.write(st)
-		
+
 
 	# forming index
 	if index:
 		print 'Forming index...'
-		tmp = range(1,13)
+		n0_up=C['volumes']['b0_rl']+C['volumes']['dwi_rl'][0]
+		n0_dn=C['volumes']['b0_lr']+C['volumes']['dwi_lr'][0]
+		n_up=C['volumes']['dwi_rl'][1]
+		n_dn=C['volumes']['dwi_lr'][1]
+		tmp = range(1,n0_up+n0_dn+1)
 		tmp = [str(xx) for xx in tmp]
-		tmp = tmp + ['6']*64 + ['12']*64
+		tmp = tmp + [str(n0_up)]*n_up + [str(n0_up+n0_dn)]*n_dn
 		tmp = ' '.join(tmp)
 		with open(fd+'index','w') as f:
 			f.write(tmp)
-
-
 
 	# running eddy
 	if eddy:
 		print 'running eddy...'
 	#eddy --index=index.txt --bvecs=data.bvecs
 	#--bvals=data.bval --mask=brain
-	#--acqp=acqparam.txt --topup=b0_topup --out=data_eddy 
-		cmd = '''eddy --imain=IMAIN --index=INDEX --bvecs=BVEC 
+	#--acqp=acqparam.txt --topup=b0_topup --out=data_eddy
+		cmd = '''eddy --imain=IMAIN --index=INDEX --bvecs=BVEC
 		 --bvals=BVAL --mask=MASK --topup=TOPUP --out=OUT --acqp=ACQ'''
 		cmd = cmd.replace('INDEX',fd+'index')
 		cmd = cmd.replace('BVAL',fd+'data.bval')
@@ -308,9 +334,9 @@ def pipeline(fd,fsl_readout):
 	for cur in files:
 		copyfile(fd+cur,sub_out+'/'+cur)
 	return 1
-		
-		
-	
+
+
+
 
 
 	# saving results to output
@@ -322,43 +348,38 @@ def pipeline(fd,fsl_readout):
 results = parser.parse_args()
 
 
-################### Input keyword settings #############################
-print "Provide two keyword phrases to search for each required files:"
-while True:
-	tmp = raw_input("Right to left b0 acquisitions:")
-	b0_rl = tmp.split(' ')
-	if len(b0_rl) == 2:
-		break
-	print "Input Error: Provide TWO keyword phrases"
-
-while True:
-	tmp = raw_input("Left to right b0 acquisitions:")
-	b0_lr = tmp.split(' ')
-	if len(b0_rl) == 2:
-		break
-	print "Input Error: Provide TWO keyword phrases"
-	
-while True:
-	tmp = raw_input("Right to left DWI acquisitions:")
-	dwi_rl = tmp.split(' ')
-	if len(b0_rl) == 2:
-		break
-	print "Input Error: Provide TWO keyword phrases"
-
-while True:
-	tmp = raw_input("Left to right DWI acquisitions:")
-	dwi_lr = tmp.split(' ')
-	if len(b0_rl) == 2:
-		break
-	print "Input Error: Provide TWO keyword phrases"
-	
-####################### Starting the pipeline ##########################	
+################### Input settings from config.json #############################
 rt = results.root_folder
 if rt[-1] != '/':
 	rt = rt + '/'
+with open(rt+'config.json') as f:
+    C = json.load(f)
+try:
+	b0_rl = C['filenames']['b0_rl']
+except KeyError:
+	b0_rl = None
+try:
+	b0_lr = C['filenames']['b0_lr']
+except KeyError:
+	b0_lr = None
+
+try:
+	dwi_rl = C['filenames']['dwi_rl']
+except KeyError:
+	print 'Error in config file:Please include dwi_rl key for right to left (or up down) dwi images'
+	sys.exit(1)
+
+
+try:
+	dwi_lr = C['filenames']['dwi_lr']
+except KeyError:
+	print 'Error in config file:Please include dwi_lr key for left to right (or down up) dwi images'
+	sys.exit(1)
+
+####################### Starting the pipeline ##########################
 dirc = rt+'Inputs/'
 if not os.path.isdir(dirc):
-	print 'Error:directory '+dirc+' not found!' 
+	print 'Error:directory '+dirc+' not found!'
 	sys.exit()
 for (dp, dns, fns) in os.walk(dirc):
 	if dp[0] == '/':
