@@ -9,8 +9,8 @@ The input requirement is based on NPRL group at Emory acquisition protocol. For 
 * Diffusion image right to left phase-encoded acquisition
 * Diffusion image left to right phase-encoded acquisition
 * bvector (.bvec) for each diffusion image
-* b-value (.bval) for each diffusion image
-The naming scheme for the files must be set in the config.json file placed in the root of the stydy folder. Sample config.json file is included in this repository.
+* b-value (.bval) for each diffusion image<br/>
+The naming scheme for the files must be set in the _**config.json**_ file placed in the root of the stydy folder. Sample config.json file is included in this repository.
 ```
 {
   "filenames": {
