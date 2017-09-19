@@ -21,19 +21,19 @@ The naming scheme for the files must be set in the _**config.json**_ file placed
 ```
 {
   "filenames": {
-    "b0_rl": [ #should contain two strings identifying b0 image right to left images
+    "b0_rl": [ #should contain two strings identifying b0 right to left images
       "b0",  
       "RL"
     ],
-    "b0_lr": [ #should contain two strings identifying b0 image left to right images
+    "b0_lr": [ #should contain two strings identifying b0 left to right images
       "b0",
       "LR"
     ],
-    "dwi_rl": [  #should contain two strings identifying weighted image right to left images
+    "dwi_rl": [  #should contain two strings identifying weighted right to left images
       "D",
       "RL"
     ],
-    "dwi_lr": [ #should contain two strings identifying weighted image left to right images
+    "dwi_lr": [ #should contain two strings identifying weighted left to right images
       "D",
       "LR"
     ]
