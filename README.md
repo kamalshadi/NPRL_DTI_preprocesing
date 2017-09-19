@@ -13,8 +13,8 @@ The input requirement is based on NPRL group at Emory acquisition protocol. For 
 The naming scheme for the files must be set in the config.json file placed in the root of the stydy folder. Sample config.json file is included in this repository.
 
 {
-  "filenames": {
-    "b0_rl": [ &rarr; should contain two strings identifying b0 image right to left images
+  "filenames": { \newline
+    "b0_rl": [ &rarr; should contain two strings identifying b0 image right to left images \newline
       "b0",  
       "RL"
     ],
@@ -32,7 +32,7 @@ The naming scheme for the files must be set in the config.json file placed in th
     ]
   },
   "volumes": {
-    "b0_rl": 6, <span style="color:blue">&rarr; number of b0 right to left volumes</span>
+    "b0_rl": 6, &rarr; number of b0 right to left volumes
     "b0_lr": 6, &rarr; number of b0 left to right volumes
     "dwi_rl": [
       6, &rarr; number of b0 imaged included in weighted acquisions (right to left)
