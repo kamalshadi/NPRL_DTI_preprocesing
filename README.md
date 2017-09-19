@@ -10,7 +10,40 @@ The input requirement is based on NPRL group at Emory acquisition protocol. For 
 * Diffusion image left to right phase-encoded acquisition
 * bvector (.bvec) for each diffusion image
 * b-value (.bval) for each diffusion image
+The naming scheme for the files must be set in the config.json file placed in the root of the stydy folder. Sample config.json file is included in this repository.
 
+{
+  "filenames": {
+    "b0_rl": [ &rarr; should contain two strings identifying b0 image right to left images
+      "b0",  
+      "RL"
+    ],
+    "b0_lr": [ &rarr; should contain two strings identifying b0 image left to right images
+      "b0",
+      "LR"
+    ],
+    "dwi_rl": [  &rarr; should contain two strings identifying weighted image right to left images
+      "D",
+      "RL"
+    ],
+    "dwi_lr": [ &rarr; should contain two strings identifying weighted image left to right images
+      "D",
+      "LR"
+    ]
+  },
+  "volumes": {
+    "b0_rl": 6, <span style="color:blue">&rarr; number of b0 right to left volumes</span>
+    "b0_lr": 6, &rarr; number of b0 left to right volumes
+    "dwi_rl": [
+      6, &rarr; number of b0 imaged included in weighted acquisions (right to left)
+      64 &rarr; number of weighted right to left volumes
+    ],
+    "dwi_lr": [
+      6, &rarr; number of b0 imaged included in weighted acquisions (left to right)
+      64 &rarr; number of weighted left to right volumes
+    ]
+  }
+}
 ## Directory structure
 Put all subjects' data in the folder **\<study>/Inputs** . **\<study>** is an optional name for the
 study and the parent folder of Inputs. In the **Inputs** directory each subject have her own
