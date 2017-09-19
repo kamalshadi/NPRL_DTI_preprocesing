@@ -14,33 +14,33 @@ The naming scheme for the files must be set in the config.json file placed in th
 ```
 {
   "filenames": {
-    "b0_rl": [ &rarr; _should contain two strings identifying b0 image right to left images_
+    "b0_rl": [ #should contain two strings identifying b0 image right to left images
       "b0",  
       "RL"
     ],
-    "b0_lr": [ &rarr; should contain two strings identifying b0 image left to right images
+    "b0_lr": [ #should contain two strings identifying b0 image left to right images
       "b0",
       "LR"
     ],
-    "dwi_rl": [  &rarr; should contain two strings identifying weighted image right to left images
+    "dwi_rl": [  #should contain two strings identifying weighted image right to left images
       "D",
       "RL"
     ],
-    "dwi_lr": [ &rarr; should contain two strings identifying weighted image left to right images
+    "dwi_lr": [ #should contain two strings identifying weighted image left to right images
       "D",
       "LR"
     ]
   },
   "volumes": {
-    "b0_rl": 6, &rarr; number of b0 right to left volumes
-    "b0_lr": 6, &rarr; number of b0 left to right volumes
+    "b0_rl": 6, #number of b0 right to left volumes
+    "b0_lr": 6, #number of b0 left to right volumes
     "dwi_rl": [
-      6, &rarr; number of b0 imaged included in weighted acquisions (right to left)
-      64 &rarr; number of weighted right to left volumes
+      6, #number of b0 imaged included in weighted acquisions (right to left)
+      64 #number of weighted right to left volumes
     ],
     "dwi_lr": [
-      6, &rarr; number of b0 imaged included in weighted acquisions (left to right)
-      64 &rarr; number of weighted left to right volumes
+      6, #number of b0 imaged included in weighted acquisions (left to right)
+      64 #number of weighted left to right volumes
     ]
   }
 }
