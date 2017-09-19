@@ -149,8 +149,8 @@ def pipeline(fd,fsl_readout):
 	#~ print ';;;;'
 	if fd[-1]!='/':
 		fd = fd + '/'
-	merging = False
-	ac = False
+	merging = True
+	ac = True
 	topup = True
 	avg = True
 	bet = True

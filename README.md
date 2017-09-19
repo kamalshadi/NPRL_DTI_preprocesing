@@ -1,6 +1,11 @@
 # Introduction
 This script runs HCP-like minimal preprocessing pipeline for diffusion weighted images.
 
+# Required Packages
+
+* FSL
+* select_dwi_vols for FSL
+
 # Input Requirement
 The input requirement is based on NPRL group at Emory acquisition protocol. For each subject following files must be available:
 
