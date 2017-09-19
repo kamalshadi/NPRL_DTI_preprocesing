@@ -13,8 +13,8 @@ The input requirement is based on NPRL group at Emory acquisition protocol. For 
 The naming scheme for the files must be set in the config.json file placed in the root of the stydy folder. Sample config.json file is included in this repository.
 
 {
-  "filenames": { \newline
-    "b0_rl": [ &rarr; should contain two strings identifying b0 image right to left images \newline
+  "filenames": { <br/>
+    "b0_rl": [ &rarr; should contain two strings identifying b0 image right to left images <br/>
       "b0",  
       "RL"
     ],
