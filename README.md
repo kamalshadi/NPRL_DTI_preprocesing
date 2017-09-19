@@ -11,7 +11,7 @@ The input requirement is based on NPRL group at Emory acquisition protocol. For 
 * bvector (.bvec) for each diffusion image
 * b-value (.bval) for each diffusion image
 The naming scheme for the files must be set in the config.json file placed in the root of the stydy folder. Sample config.json file is included in this repository.
-
+```
 {
   "filenames": { <br/>
     "b0_rl": [ &rarr; should contain two strings identifying b0 image right to left images <br/>
@@ -44,6 +44,7 @@ The naming scheme for the files must be set in the config.json file placed in th
     ]
   }
 }
+```
 ## Directory structure
 Put all subjects' data in the folder **\<study>/Inputs** . **\<study>** is an optional name for the
 study and the parent folder of Inputs. In the **Inputs** directory each subject have her own
