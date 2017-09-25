@@ -150,11 +150,11 @@ def pipeline(fd,fsl_readout):
 	#~ print ';;;;'
 	if fd[-1]!='/':
 		fd = fd + '/'
-	merging = False
+	merging = True
 	ac = True
-	topup = False
-	avg = False
-	bet = False
+	topup = True
+	avg = True
+	bet = True
 	bvec = True
 	bval = True
 	index = True
@@ -334,7 +334,7 @@ def pipeline(fd,fsl_readout):
 		tmp = ' '.join(tmp)
 		with open(fd+'index','w') as f:
 			f.write(tmp)
-			
+
 	raw_input('---->')
 	# running eddy
 	if eddy:
