@@ -4,7 +4,8 @@ This script runs HCP-like minimal preprocessing pipeline for diffusion weighted 
 # Required Packages
 
 * FSL
-* select_dwi_vols for FSL
+* nibabel
+* python 2.7
 
 # Input Requirement
 The input requirement is based on NPRL group at Emory acquisition protocol. For each subject following files must be available:
@@ -36,18 +37,6 @@ The naming scheme for the files must be set in the _**config.json**_ file placed
     "dwi_lr": [ #should contain two strings identifying weighted left to right images
       "D",
       "LR"
-    ]
-  },
-  "volumes": {
-    "b0_rl": 6, #number of b0 right to left volumes
-    "b0_lr": 6, #number of b0 left to right volumes
-    "dwi_rl": [
-      6, #number of b0 imaged included in weighted acquisions (right to left)
-      64 #number of weighted right to left volumes
-    ],
-    "dwi_lr": [
-      6, #number of b0 imaged included in weighted acquisions (left to right)
-      64 #number of weighted left to right volumes
     ]
   }
 }

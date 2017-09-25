@@ -36,6 +36,7 @@ import numpy as num
 from math import cos,sin
 from shutil import copyfile
 import json
+import nibabel as nib
 
 
 
@@ -149,11 +150,11 @@ def pipeline(fd,fsl_readout):
 	#~ print ';;;;'
 	if fd[-1]!='/':
 		fd = fd + '/'
-	merging = True
+	merging = False
 	ac = True
-	topup = True
-	avg = True
-	bet = True
+	topup = False
+	avg = False
+	bet = False
 	bvec = True
 	bval = True
 	index = True
@@ -227,8 +228,21 @@ def pipeline(fd,fsl_readout):
 		fd+'weighted_dn')
 		os.system('fslmerge -t '+fd+'data '+fd+'nodif '+fd+'data')
 	if ac:
+		####### I have to make this part generic ####################
+		img1 = nib.load(b0_up)
+		img2 = nib.load(b0_dn)
+		img3 = nib.load(fd+'nodif_up1.nii.gz')
+		img4 = nib.load(fd+'nodif_dn1.nii.gz')
+		img5 = nib.load(raw_up)
+		img6 = nib.load(raw_dn)
+		C['volumes'] = {}
+		C['volumes']['b0_rl'] = int(img1.header['dim'][4])
+		C['volumes']['b0_lr'] = int(img2.header['dim'][4])
+		C['volumes']['dwi_rl'] = [int(img3.header['dim'][4]),int(img5.header['dim'][4])-int(img3.header['dim'][4])]
+		C['volumes']['dwi_lr'] = [int(img4.header['dim'][4]),int(img6.header['dim'][4])-int(img4.header['dim'][4])]
 		c1 = C['volumes']['b0_rl']+C['volumes']['dwi_rl'][0]
 		c2 = C['volumes']['b0_lr']+C['volumes']['dwi_lr'][0]
+		print C
 		# forming acqparams
 		print 'Making acqparams...'
 		with open(fd+'acqparams.txt','w') as f:
@@ -267,6 +281,7 @@ def pipeline(fd,fsl_readout):
 
 	# forming bvec and bval
 	if bvec:
+		####### I have to make this part generic ####################
 		print 'Forming bvec...'
 		up = read_bvec(bvec_up)
 		dn = read_bvec(bvec_dn)
@@ -294,6 +309,7 @@ def pipeline(fd,fsl_readout):
 
 	# forming bval
 	if bval:
+		####### I have to make this part generic ####################
 		print 'Forming bval...'
 		tmp = ['0']*(C['volumes']['b0_rl']+C['volumes']['dwi_rl'][0]+\
 		C['volumes']['b0_lr']+C['volumes']['dwi_lr'][0])
@@ -306,6 +322,7 @@ def pipeline(fd,fsl_readout):
 
 	# forming index
 	if index:
+		####### I have to make this part generic ####################
 		print 'Forming index...'
 		n0_up=C['volumes']['b0_rl']+C['volumes']['dwi_rl'][0]
 		n0_dn=C['volumes']['b0_lr']+C['volumes']['dwi_lr'][0]
@@ -317,7 +334,8 @@ def pipeline(fd,fsl_readout):
 		tmp = ' '.join(tmp)
 		with open(fd+'index','w') as f:
 			f.write(tmp)
-
+			
+	raw_input('---->')
 	# running eddy
 	if eddy:
 		print 'running eddy...'
