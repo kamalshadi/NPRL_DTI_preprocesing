@@ -199,6 +199,17 @@ def pipeline(fd,fsl_readout):
 	if merging:
 		# forming nodif
 		print 'Juxtaposing the data in the right order...'
+		with open(bval_up) as f:
+			tmp = f.read()
+			tmp = tmp.strip()
+		with open(bval_up,'w') as f:
+			f.write(tmp)
+		with open(bval_dn) as f:
+			tmp = f.read()
+			tmp = tmp.strip()
+		with open(bval_dn,'w') as f:
+			f.write(tmp)
+
 		os.system('select_dwi_vols '+raw_up+ ' '+bval_up+' '+fd+'nodif_up1 0')
 		os.system('select_dwi_vols '+raw_dn+ ' '+bval_dn+' '+fd+'nodif_dn1 0')
 		os.system('select_dwi_vols '+raw_up+ ' '+bval_up+' '+fd+'weighted_up 1000')
